@@ -1,80 +1,32 @@
-" ----- visual/ -----
-syntax on
+"行番号を表示
 set number
-set noerrorbells
-set shell=/bin/zsh
-set showmatch matchtime=1
-set cinoptions+=:0
-set showcmd
-set shiftwidth=4
-set display=lastline
-set list
-set showmatch
-set cursorline
-set autoread
-set tabstop=4
-set textwidth=0
+"タブ文字の代わりにスペースを使う
 set expandtab
-set clipboard=unnamed
-set encoding=utf-8
-set termencoding=utf-8
-set fileencoding=utf-8
-
-execute "set colorcolumn=" . join(range(121, 9999), ',')
-" ----- /visual -----
-
-
-" ----- search/ -----
-set ignorecase
-set smartcase
-set wrapscan
-set incsearch
-set hlsearch
-
-" minibufexpl
-nnoremap <silent> bn :<C-u>:bnext<CR>
-nnoremap <silent> b1 :<C-u>:b1<CR>
-nnoremap <silent> b2 :<C-u>:b2<CR>
-nnoremap <silent> b3 :<C-u>:b3<CR>
-nnoremap <silent> b4 :<C-u>:b4<CR>
-nnoremap <silent> b5 :<C-u>:b5<CR>
-nnoremap <silent> b6 :<C-u>:b6<CR>
-nnoremap <silent> b7 :<C-u>:b7<CR>
-nnoremap <silent> b8 :<C-u>:b8<CR>
-nnoremap <silent> b9 :<C-u>:b9<CR>
-
-" fzf
-nnoremap <silent> fzf :Files<CR>
-nnoremap <silent> ls :Buffers<CR>
-
-nmap <Space> :Files
-" ----- /search -----
-
-
-" ----- edit/ -----
-inoremap jj <Esc>
-noremap <Esc><Esc> :noh<CR>
-noremap ; :
-set clipboard+=unnamedplus
-set expandtab
-set shiftwidth=2
-set tabstop=2
-set softtabstop=2
 set smartindent
-" ----- /edit -----
+set shiftwidth=4
+set softtabstop=4
+set autochdir
+set encoding=utf-8
+set cursorline
+set fileencoding=utf-8
+set fileencodings=utf-8,cp932
+
+set clipboard&
+set clipboard^=unnamedplus
+"eコマンド等でTabキーを押すとパスを保管する : この場合まず最長一致文字列まで補完し、2回目以降は一つづつ試す
+set wildmode=longest,full
+
+"mac command + p でfzf起動
+nmap <C-p> :Files $APP_ROOT_DIR<CR>
+
+" 挿入モード時
+inoremap jj <Esc>
+set clipboard&
+set clipboard^=unnamedplus
 
 
-" ----- control/ ----
-nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-l> <C-w>l
-" ----- /control ----
-
-
-" ----- other/ -----
-set ttimeoutlen=10
-" ----- /other -----
+"RubyとJSではインデントを2マスにする
+autocmd FileType ruby,javascript set shiftwidth=2 softtabstop=2
 
 
 " ----- dein.vim/ ------
@@ -106,6 +58,7 @@ endif
 " ----- /dein.vim ------
 
 
+let g:seiya_auto_enable=1
 " ----- colorscheme/ -----
 set background=dark
 colorscheme iceberg
