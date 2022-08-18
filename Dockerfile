@@ -1,9 +1,7 @@
 FROM alpine:latest
 
-# マルチバイト文字をまともに扱うための設定
 ENV LANG="en_US.UTF-8" LANGUAGE="en_US:ja" LC_ALL="en_US.UTF-8"
 
-# 最低限必要なパッケージ
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
@@ -24,6 +22,7 @@ RUN apk update && \
     ruby \
     ruby-dev \
     neovim-doc \
+    ripgrep \
     fzf \ 
     && \
     rm -rf /var/cache/apk/*
@@ -43,7 +42,6 @@ ENV GOPATH=/root/go PATH=${GOPATH}/bin:/usr/local/go/bin:$PATH GOBIN=$GOROOT/bin
 
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
-# install dein.vim
 RUN curl -sf https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s /root/.cache/dein 
 
 COPY nvim /root/.config/nvim

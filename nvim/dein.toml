@@ -5,19 +5,19 @@ repo = 'vim-airline/vim-airline'
 repo = 'miyakogi/seiya.vim'
 
 [[plugins]]
-repo = 'junegunn/fzf'
-build = './install --bin'
-merged = '0'
+repo = 'nvim-lua/plenary.nvim'
 
 [[plugins]]
-repo = 'junegunn/fzf.vim'
-depends = 'fzf'
-hook_add = '''
-  command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   'rg --line-number --no-heading '.shellescape(<q-args>), 0,
-    \   fzf#vim#with_preview({'options': '--exact --reverse'}, 'right:50%:wrap'))
-'''
+repo = 'nvim-telescope/telescope.nvim'
+depends = ['plenary.nvim']
+
+[[plugins]]
+repo = 'nvim-telescope/telescope-fzf-native.nvim'
+depends = ['telescope.nvim']
+build = 'make'
+
+[[plugins]]
+repo = 'kyazdani42/nvim-web-devicons'
 
 [[plugins]]
 repo = 'scrooloose/nerdtree'
@@ -34,6 +34,9 @@ repo = 'airblade/vim-gitgutter'
 
 [[plugins]]
 repo = 'honza/vim-snippets'
+
+[[plugins]]
+repo = 'fatih/vim-go'
 
 [[plugins]]
 repo = 'neoclide/coc.nvim'
