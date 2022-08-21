@@ -1,9 +1,0 @@
-{
-  "codeLens.enable": true,
-  "suggest.enablePreselect": true,
-  "solargraph.checkGemVersion": false,
-  "solargraph.formatting": true,
-   "coc.preferences.formatOnSaveFiletypes": [
-     "go"
-  ]
-}
