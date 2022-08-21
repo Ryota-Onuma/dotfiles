@@ -35,6 +35,7 @@ go install golang.org/x/tools/cmd/goimports@latest
 vimを開いてpluginをインストールする
 ```
 :PlugInstall
+:LspInstallServer
 ```
 
 # Dockerバージョン
