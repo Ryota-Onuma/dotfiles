@@ -26,6 +26,11 @@ alias vim='export NVIM_APP_ROOT_DIR=$(pwd) && nvim'
 mkdir -p ~/.config/nvim/
 ln -fns このリポジトリのパス/dev-settings/nvim/init.vim ~/.config/nvim/init.vim
 ```
+依存ライブラリ入れる
+```
+go install golang.org/x/tools/gopls@latest
+go install golang.org/x/tools/cmd/goimports@latest
+```
 
 vimを開いてpluginをインストールする
 ```

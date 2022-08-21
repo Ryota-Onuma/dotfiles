@@ -23,31 +23,32 @@ RUN apk update && \
     ruby-dev \
     neovim-doc \
     ripgrep \
-    fzf \ 
     lazygit \
+    ripgrep \
     && \
     rm -rf /var/cache/apk/*
 
-RUN pip3 install --upgrade pip pynvim
-RUN gem install -N \
+RUN pip3 install --upgrade pip pynvim \
+    && gem install -N \
     etc \
     json \
     rubocop \
     rubocop-performance \
     rubocop-rails \
     rubocop-rspec \
-    solargraph
+    solargraph \
+    && sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim' 
 
 
 ENV GOPATH=/root/go PATH=${GOPATH}/bin:/usr/local/go/bin:$PATH GOBIN=$GOROOT/bin GO111MODULE=on TERM=xterm-color256
 
 RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 
-RUN go install golang.org/x/tools/gopls@latest
+RUN go install golang.org/x/tools/gopls@latest && go install golang.org/x/tools/cmd/goimports@latest
 
 COPY nvim /root/.config/nvim
 
-RUN nvim +:UpdateRemotePlugins +qa
-RUN chmod -R 777 /root
+RUN nvim +:PlugInstall +qa && chmod -R 777 /root
 
 ENTRYPOINT ["nvim"]

@@ -1,4 +1,5 @@
 "行番号を表示
+"
 set number
 "タブ文字の代わりにスペースを使う
 set expandtab
@@ -39,8 +40,6 @@ nnoremap <Leader>q :q!<CR>
 
 vnoremap <BS> d
 
-" 補完表示時のEnterで改行をしない
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
 inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 
@@ -73,14 +72,21 @@ Plug 'kdheepak/lazygit.nvim'
 
 Plug 'preservim/nerdtree'
 
-Plug 'neoclide/coc.nvim', { 'branch': 'release' }
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'mattn/vim-goimports'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'mattn/vim-lsp-icons'
 
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+ 
 call plug#end()
 
 let g:airline#extensions#tabline#enabled = 1
-nmap <Leader>o <Plug>AirlineSelectPrevTab
-nmap <Leader>p <Plug>AirlineSelectNextTab
+nnoremap <Leader>o <Plug>AirlineSelectPrevTab
+nnoremap <Leader>p <Plug>AirlineSelectNextTab
 
 let NERDTreeShowHidden = 1
 nnoremap <C-n> :NERDTreeToggle $NVIM_APP_ROOT_DIR<CR>
@@ -111,9 +117,25 @@ let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 1
 let g:airline#extensions#tabline#show_close_button = 0
 
-nnoremap <Leader>gb <cmd>Telescope git_branches theme=get_dropdown<cr>
 
-" ----- colorscheme/ -----
+" ポップアップウィンドウのようなpreview用の画面にDefinitionを表示してくれる
+nnoremap <silent> <Leader>d :LspDefinition<CR>
+" 型定義へジャンプ
+nnoremap <silent> <Leader>t :LspTypeDefinition<CR>
+" 参照されている部分を表示
+nnoremap <silent> <Leader>r :LspReferences<CR>
+" 全実装とinterfaceを見つけ出してくれる
+nnoremap <silent> <Leader>i :LspImplementation<CR>
+
+" lsp_diagnostics_enabledを1にすると自動解析
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:asyncomplete_popup_delay = 200
+let g:lsp_text_edit_enabled = 0
+
+let g:goimports = 1
+
+"----- colorscheme/ -----
 set background=dark
 colorscheme iceberg
 " ----- /colorscheme -----
