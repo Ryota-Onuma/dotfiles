@@ -30,6 +30,8 @@ vnoremap <Leader>l $
 nnoremap <Leader>h ^
 vnoremap <Leader>h ^
 
+nnoremap <Leader>g :!lazygit
+
 nnoremap <BS> <S-x>
 
 nnoremap <C-p> <cmd>Telescope find_files cwd=$APP_ROOT_DIR hidden=true theme=get_dropdown<cr>

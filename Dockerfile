@@ -24,6 +24,7 @@ RUN apk update && \
     neovim-doc \
     ripgrep \
     fzf \ 
+    lazygit \
     && \
     rm -rf /var/cache/apk/*
 
