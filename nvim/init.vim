@@ -81,7 +81,10 @@ Plug 'mattn/vim-lsp-icons'
 
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
- 
+
+Plug 'tpope/vim-commentary'
+Plug 'jiangmiao/auto-pairs'
+
 call plug#end()
 
 let g:airline#extensions#tabline#enabled = 1
