@@ -33,18 +33,26 @@ nnoremap <Leader>h ^
 vnoremap <Leader>h ^
 
 nnoremap <Leader>g :LazyGit<CR>
-nnoremap :vsplit :split
-nnoremap <BS> <S-x>
-nnoremap <CR> o
+nnoremap <BS> "_<S-x>
+nnoremap <CR> "_o
 nnoremap <Leader>q :q!<CR>
 
-vnoremap <BS> d
+vnoremap <BS> "_X
+
+" tab切替
+" nnoremap <Leader><tab> :bnext<CR>
+nnoremap :tab :vsplit
+nnoremap :close :bd<CR>
+let g:airline#extensions#tabline#enabled = 1
+nnoremap <Leader>o <Plug>AirlineSelectPrevTab
+nnoremap <Leader>p <Plug>AirlineSelectNextTab
 
 inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
 inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 
 "削除キーでヤンクしない
 nnoremap x "_x
+nnoremap <S-x> "_<S-x>
 nnoremap d "_d
 nnoremap D "_D
 
@@ -86,10 +94,6 @@ Plug 'tpope/vim-commentary'
 Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
-
-let g:airline#extensions#tabline#enabled = 1
-nnoremap <Leader>o <Plug>AirlineSelectPrevTab
-nnoremap <Leader>p <Plug>AirlineSelectNextTab
 
 let NERDTreeShowHidden = 1
 nnoremap <C-n> :NERDTreeToggle $NVIM_APP_ROOT_DIR<CR>

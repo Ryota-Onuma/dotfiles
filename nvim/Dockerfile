@@ -43,11 +43,11 @@ RUN pip3 install --upgrade pip pynvim \
 
 ENV GOPATH=/root/go PATH=${GOPATH}/bin:/usr/local/go/bin:$PATH GOBIN=$GOROOT/bin GO111MODULE=on TERM=xterm-color256
 
-RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin && mkdir -p /root/.config/nvim
 
 RUN go install golang.org/x/tools/gopls@latest && go install golang.org/x/tools/cmd/goimports@latest
 
-COPY nvim /root/.config/nvim
+COPY ./nvim /root/.config/nvim
 
 RUN nvim +:PlugInstall +qa && chmod -R 777 /root
 
