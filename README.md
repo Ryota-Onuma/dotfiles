@@ -24,7 +24,9 @@ alias vim='export NVIM_APP_ROOT_DIR=$(pwd) && nvim'
 シンボリックリンクをはる
 ```
 mkdir -p ~/.config/nvim/
-ln -fns このリポジトリのパス/dev-settings/nvim/init.vim ~/.config/nvim/init.vim
+ln -fns このリポジトリのパス/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
+
+ln -fns このリポジトリのパス/dotfiles/git-cz/changelog.config.js ~/changelog.config.js
 ```
 依存ライブラリ入れる
 ```
