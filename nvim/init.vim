@@ -27,6 +27,9 @@ nnoremap vv <C-v>
 nnoremap <Leader>h ^
 nnoremap <Leader>l $
 nnoremap <Leader>. <cmd>CHADopen<CR>
+nnoremap <S-t> :tabnew<CR>
+nnoremap <S-w> :tabclose<CR>
+nnoremap <S-tab> :tabnext<CR>
 
 
 "削除キーでヤンクしない
@@ -45,7 +48,7 @@ inoremap <silent>jj <Esc>
 vnoremap <Leader>q :q!<CR>
 vnoremap <BS> "_<S-x>
 vnoremap x "_x
-
+vnoremap c y
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n>
@@ -72,6 +75,7 @@ call plug#begin()
     Plug 'folke/noice.nvim'
     Plug 'MunifTanjim/nui.nvim'
     Plug 'tpope/vim-commentary'
+    Plug 'jiangmiao/auto-pairs'
 call plug#end()
 
 "nvim-cmpの設定
@@ -228,3 +232,6 @@ nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
 "テーマを設定する
 set background=dark
 colorscheme kanagawa-wave
+
+highlight Visual ctermfg=black ctermbg=yellow gui=NONE guifg=black guibg=yellow
+
