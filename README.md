@@ -16,6 +16,8 @@ mkdir -p ~/.config/nvim/
 ln -fns このリポジトリのパス/dotfiles/nvim/init.vim ~/.config/nvim/init.vim
 
 ln -fns このリポジトリのパス/dotfiles/git-cz/changelog.config.js ~/changelog.config.js
+
+ln -fns このリポジトリのパス/dotfiles/karabiner/karabiner.json ~/.config/karabiner/karabiner.json
 ```
 
 依存ライブラリ入れる
