@@ -26,11 +26,11 @@ nnoremap <C-c> :q!<CR>
 nnoremap vv <C-v>
 nnoremap <Leader>h ^
 nnoremap <Leader>l $
-nnoremap <Leader>. <cmd>CHADopen<CR>
 nnoremap <S-t> :tabnew<CR>
 nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
 
+nnoremap <C-n> <cmd>CHADopen<CR>
 
 "削除キーでヤンクしない
 nnoremap x "_x
@@ -52,6 +52,7 @@ vnoremap c y
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n>
+tnoremap <C-c> <C-\><C-n>
 autocmd TermOpen * setlocal norelativenumber
 autocmd TermOpen * setlocal nonumber
 
@@ -92,8 +93,8 @@ cmp.setup({
   mapping = {
     ['<Up>'] = cmp.mapping.select_prev_item(),
     ['<Down>'] = cmp.mapping.select_next_item(),
-    ['<C-j>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-k>'] = cmp.mapping.scroll_docs(4),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-n>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-c>'] = cmp.mapping.close(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
@@ -228,6 +229,21 @@ nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<cr>
 nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<cr>
 nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<cr>
 nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
+
+"quickfixでEnterを押したら閉じるようにする
+function! CloseQuickfixAndJump()
+" Jump to the selected quickfix item
+  execute "normal! \<CR>"
+
+  " Close the quickfix window
+  cclose
+endfunction
+
+"Map <Enter> in the quickfix window to the CloseQuickfixAndJump function
+augroup quickfix_enter
+  autocmd!
+  autocmd FileType qf nnoremap <buffer> <CR> :call CloseQuickfixAndJump()<CR>
+augroup END
 
 "テーマを設定する
 set background=dark
