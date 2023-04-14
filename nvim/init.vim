@@ -17,20 +17,59 @@ set clipboard+=unnamedplus
 set modifiable
 set write
 
+call plug#begin()
+    Plug 'rebelot/kanagawa.nvim' 
+    Plug 'lewis6991/gitsigns.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+    Plug 'BurntSushi/ripgrep'
+    Plug 'airblade/vim-rooter'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'L3MON4D3/LuaSnip'
+    Plug 'saadparwaiz1/cmp_luasnip'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'nvim-lua/completion-nvim'
+    Plug 'github/copilot.vim'
+    Plug 'nvim-neo-tree/neo-tree.nvim'
+    Plug 'folke/noice.nvim'
+    Plug 'MunifTanjim/nui.nvim'
+    Plug 'tpope/vim-commentary'
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'easymotion/vim-easymotion'
+    Plug 'nvim-lualine/lualine.nvim'
+    Plug 'nvim-tree/nvim-web-devicons'
+    Plug 'rmagatti/auto-session'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'folke/todo-comments.nvim'
+call plug#end()
+
 "SpaceをLeaderにする
 let mapleader = "\<Space>"
 
 "ノーマルモード時
 nnoremap <BS> "_<S-x>
-nnoremap <C-c> :q!<CR>
+nnoremap <silent><C-c> :q!<CR>
 nnoremap vv <C-v>
 nnoremap <Leader>h ^
 nnoremap <Leader>l $
 nnoremap <S-t> :tabnew<CR>
 nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
+nnoremap <silent> path :let @*=expand('%')<CR>
+nnoremap <C-n> :Neotree float<CR>
 
-nnoremap <C-n> <cmd>CHADopen<CR>
+"easymotionの設定
+nnoremap <Leader> <Plug>(easymotion-prefix)
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_smartcase = 1  " Turn on case insensitive feature
+nnoremap <Leader>j <Plug>(easymotion-j)
+nnoremap <Leader>k <Plug>(easymotion-k)
+nnoremap <Leader>f <Plug>(easymotion-overwin-f)
+nnoremap <Leader>w <Plug>(easymotion-jumptoanywhere)
+nnoremap <Leader>s <Plug>(easymotion-overwin-f2)
+
 
 "削除キーでヤンクしない
 nnoremap x "_x
@@ -56,28 +95,74 @@ tnoremap <C-c> <C-\><C-n>
 autocmd TermOpen * setlocal norelativenumber
 autocmd TermOpen * setlocal nonumber
 
+"ファイラの設定
+lua << EOF
+  require("neo-tree").setup({
+      popup_border_style = "rounded",
+      source_selector = {
+          winbar = false,
+          statusline = false
+      },
+      filesystem = {
+         follow_current_file = true,
+      },
+      buffers = {
+            follow_current_file = true,
+      },
+  })
+EOF
 
-call plug#begin()
-    Plug 'rebelot/kanagawa.nvim' 
-    Plug 'lewis6991/gitsigns.nvim'
-    Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
-    Plug 'BurntSushi/ripgrep'
-    Plug 'airblade/vim-rooter'
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'hrsh7th/cmp-buffer'
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'L3MON4D3/LuaSnip'
-    Plug 'saadparwaiz1/cmp_luasnip'
-    Plug 'neovim/nvim-lspconfig'
-    Plug 'nvim-lua/completion-nvim'
-    Plug 'github/copilot.vim'
-    Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
-    Plug 'folke/noice.nvim'
-    Plug 'MunifTanjim/nui.nvim'
-    Plug 'tpope/vim-commentary'
-    Plug 'jiangmiao/auto-pairs'
-call plug#end()
+"アノテーションコメントを目立たせる
+lua << EOF
+  require("todo-comments").setup({
+    signs = true, 
+    sign_priority = 8,
+    keywords = {
+      FIX = {
+        icon = " ", 
+        color = "error", 
+        alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, 
+      },
+      TODO = { icon = " ", color = "info" },
+      HACK = { icon = " ", color = "warning" },
+      WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+      PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+      NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+      TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+    },
+    gui_style = {
+      fg = "NONE", -- The gui style to use for the fg highlight group.
+      bg = "BOLD", -- The gui style to use for the bg highlight group.
+    },
+    highlight = {
+      multiline = true,
+    }
+ })
+EOF
+
+"lualineの設定
+lua << EOF
+  require('lualine').setup({
+    options = {
+      theme = 'onedark'
+    }
+  })
+EOF
+
+"auto-sessionの設定
+lua << EOF
+  require("auto-session").setup {
+    log_level = "error",
+
+    cwd_change_handling = {
+      restore_upcoming_session = true, -- already the default, no need to specify like this, only here as an example
+      pre_cwd_changed_hook = nil, -- already the default, no need to specify like this, only here as an example
+      post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
+        require("lualine").refresh() -- refresh lualine so the new session name is displayed in the status bar
+      end,
+    },
+  }
+EOF
 
 "nvim-cmpの設定
 lua << EOF
