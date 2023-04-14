@@ -59,7 +59,7 @@ nnoremap <S-t> :tabnew<CR>
 nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
 nnoremap <silent> path :let @*=expand('%')<CR>
-nnoremap <C-n> :Neotree float<CR>
+nnoremap <C-n> :Neotree float reveal<CR>
 
 "easymotionの設定
 nnoremap <Leader> <Plug>(easymotion-prefix)
