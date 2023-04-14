@@ -5,9 +5,13 @@ vim-plugいれる
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 ```
-telescopeでlive grepできるようにする
+telescopeを使えるようにする
 ```
 brew install ripgrep
+
+brew install luarocks
+
+luarocks install lua-sqlite3
 ```
 
 シンボリックリンクをはる
@@ -28,7 +32,7 @@ go install golang.org/x/tools/cmd/goimports@latest
 
 vimを開いてpluginをインストールする
 ```
-:PlugInstall
+:PlugInstal
 ```
 
 aliasを設定する

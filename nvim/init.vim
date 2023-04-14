@@ -22,6 +22,9 @@ call plug#begin()
     Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+    Plug 'nvim-telescope/telescope-frecency.nvim'
+    Plug 'kkharji/sqlite.lua'
+    Plug 'nvim-tree/nvim-web-devicons'
     Plug 'BurntSushi/ripgrep'
     Plug 'airblade/vim-rooter'
     Plug 'hrsh7th/nvim-cmp'
@@ -39,8 +42,6 @@ call plug#begin()
     Plug 'jiangmiao/auto-pairs'
     Plug 'easymotion/vim-easymotion'
     Plug 'nvim-lualine/lualine.nvim'
-    Plug 'nvim-tree/nvim-web-devicons'
-    Plug 'rmagatti/auto-session'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'folke/todo-comments.nvim'
 call plug#end()
@@ -149,20 +150,6 @@ lua << EOF
   })
 EOF
 
-"auto-sessionの設定
-lua << EOF
-  require("auto-session").setup {
-    log_level = "error",
-
-    cwd_change_handling = {
-      restore_upcoming_session = true, -- already the default, no need to specify like this, only here as an example
-      pre_cwd_changed_hook = nil, -- already the default, no need to specify like this, only here as an example
-      post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
-        require("lualine").refresh() -- refresh lualine so the new session name is displayed in the status bar
-      end,
-    },
-  }
-EOF
 
 "nvim-cmpの設定
 lua << EOF
@@ -263,6 +250,7 @@ EOF
 "Telescopeの設定
 nnoremap <Leader>p <cmd>Telescope find_files<cr>
 nnoremap <Leader>g <cmd>Telescope live_grep<cr>
+nnoremap <Leader>pp <cmd>Telescope frecency<cr>
 inoremap <silent> <C-c> <cmd>Telescope close<cr>
 
 lua << EOF
@@ -272,9 +260,11 @@ require('telescope').setup {
       height = 0.9,
       width = 0.9,
     },
-  },
+  }
 }
+require('telescope').load_extension('frecency')
 EOF
+
 
 "LSP周りの設定
 lua << EOF
