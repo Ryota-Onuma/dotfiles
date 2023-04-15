@@ -121,12 +121,8 @@ tnoremap <C-,> <C-\><C-n>:close<CR>
 autocmd TermOpen * setlocal norelativenumber
 autocmd TermOpen * setlocal nonumber
 
+lua  require("toggleterm").setup()
 
-lua << EOF
-  require("toggleterm").setup({
-     close_on_exit = true
-  })
-EOF
 "ファイラの設定
 lua << EOF
   require("neo-tree").setup({
