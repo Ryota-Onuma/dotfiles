@@ -51,13 +51,15 @@ call plug#begin()
     Plug 'folke/todo-comments.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+    Plug 'goolord/alpha-nvim'
+    Plug 'segeljakt/vim-silicon'
 call plug#end()
 
 "テーマを設定する
 set background=dark
 colorscheme kanagawa-wave
 
-highlight Visual ctermfg=black ctermbg=yellow gui=NONE guifg=black guibg=yellow
+highlight visual ctermfg=black ctermbg=yellow gui=none guifg=black guibg=yellow
 
 
 "SpaceをLeaderにする
@@ -108,6 +110,7 @@ vnoremap al <Plug>(nvim-treesitter-textobjects-select-a-loop)
 vnoremap il <Plug>(nvim-treesitter-textobjects-select-inner-loop)
 vnoremap ac <Plug>(nvim-treesitter-textobjects-select-a-condition)
 vnoremap ic <Plug>(nvim-treesitter-textobjects-select-inner-condition)
+vnoremap s :'<,'>Silicon ~/desktop/images/screenshots/code-{time:%Y-%m-%d-%H%M%S}.png<CR>
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n>
@@ -132,6 +135,7 @@ lua << EOF
   })
 EOF
 
+lua require'alpha'.setup(require'alpha.themes.dashboard'.config)
 
 "アノテーションコメントを目立たせる
 lua << EOF
