@@ -53,6 +53,7 @@ call plug#begin()
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     Plug 'goolord/alpha-nvim'
     Plug 'segeljakt/vim-silicon'
+    Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 call plug#end()
 
 "テーマを設定する
@@ -68,7 +69,6 @@ let mapleader = "\<Space>"
 "ノーマルモード時
 nnoremap <BS> "_<S-x>
 nnoremap <silent><C-c> :q!<CR>
-nnoremap vv <C-v>
 nnoremap <Leader>h ^
 nnoremap <Leader>l $
 nnoremap <S-t> :tabnew<CR>
@@ -76,6 +76,8 @@ nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
 nnoremap <silent> path :let @*=expand('%')<CR>
 nnoremap <C-n> :Neotree float reveal<CR>
+nnoremap <C-,> :ToggleTerm size=80 direction=float<CR><Esc>i
+nnoremap vv <C-v> 
 
 "easymotionの設定
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
@@ -99,7 +101,7 @@ inoremap <silent>jj <Esc>
 
 
 "Visualモード時
-vnoremap <BS> "_<S-x>
+vnoremap <BS> "_x
 vnoremap x "_x
 vnoremap c y
 vnoremap af <Plug>(nvim-treesitter-textobjects-select-a-function)
@@ -113,11 +115,18 @@ vnoremap ic <Plug>(nvim-treesitter-textobjects-select-inner-condition)
 vnoremap s :'<,'>Silicon ~/desktop/images/screenshots/code-{time:%Y-%m-%d-%H%M%S}.png<CR>
 
 "Terminalモード時
-tnoremap <Esc> <C-\><C-n>
-tnoremap <C-c> <C-\><C-n>
+tnoremap <Esc> <C-\><C-n><CR>
+tnoremap <C-c> <C-\><C-n><CR>
+tnoremap <C-,> <C-\><C-n>:close<CR>
 autocmd TermOpen * setlocal norelativenumber
 autocmd TermOpen * setlocal nonumber
 
+
+lua << EOF
+  require("toggleterm").setup({
+     close_on_exit = true
+  })
+EOF
 "ファイラの設定
 lua << EOF
   require("neo-tree").setup({
