@@ -11,6 +11,8 @@ brew install ripgrep
 
 brew install luarocks
 
+brew install sqlite3
+
 brew install chafa
 
 luarocks install lua-sqlite3
