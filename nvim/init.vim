@@ -21,9 +21,14 @@ call plug#begin()
     Plug 'rebelot/kanagawa.nvim' 
     Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-lua/plenary.nvim'
+
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
     Plug 'nvim-telescope/telescope-frecency.nvim'
     Plug 'kkharji/sqlite.lua'
+    Plug 'nvim-lua/popup.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope-media-files.nvim'
+
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'BurntSushi/ripgrep'
     Plug 'airblade/vim-rooter'
@@ -44,7 +49,16 @@ call plug#begin()
     Plug 'nvim-lualine/lualine.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'folke/todo-comments.nvim'
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 call plug#end()
+
+"テーマを設定する
+set background=dark
+colorscheme kanagawa-wave
+
+highlight Visual ctermfg=black ctermbg=yellow gui=NONE guifg=black guibg=yellow
+
 
 "SpaceをLeaderにする
 let mapleader = "\<Space>"
@@ -62,14 +76,12 @@ nnoremap <silent> path :let @*=expand('%')<CR>
 nnoremap <C-n> :Neotree float reveal<CR>
 
 "easymotionの設定
-nnoremap <Leader> <Plug>(easymotion-prefix)
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 let g:EasyMotion_smartcase = 1  " Turn on case insensitive feature
-nnoremap <Leader>j <Plug>(easymotion-j)
-nnoremap <Leader>k <Plug>(easymotion-k)
-nnoremap <Leader>f <Plug>(easymotion-overwin-f)
-nnoremap <Leader>w <Plug>(easymotion-jumptoanywhere)
-nnoremap <Leader>s <Plug>(easymotion-overwin-f2)
+noremap <Leader>j <Plug>(easymotion-j)
+noremap <Leader>k <Plug>(easymotion-k)
+noremap <Leader>w <Plug>(easymotion-jumptoanywhere)
+noremap f <Plug>(easymotion-overwin-f2)
 
 
 "削除キーでヤンクしない
@@ -85,10 +97,17 @@ inoremap <silent>jj <Esc>
 
 
 "Visualモード時
-vnoremap <Leader>q :q!<CR>
 vnoremap <BS> "_<S-x>
 vnoremap x "_x
 vnoremap c y
+vnoremap af <Plug>(nvim-treesitter-textobjects-select-a-function)
+vnoremap if <Plug>(nvim-treesitter-textobjects-select-inner-function)
+vnoremap ab <Plug>(nvim-treesitter-textobjects-select-a-block) 
+vnoremap ib <Plug>(nvim-treesitter-textobjects-select-inner-block)
+vnoremap al <Plug>(nvim-treesitter-textobjects-select-a-loop)
+vnoremap il <Plug>(nvim-treesitter-textobjects-select-inner-loop)
+vnoremap ac <Plug>(nvim-treesitter-textobjects-select-a-condition)
+vnoremap ic <Plug>(nvim-treesitter-textobjects-select-inner-condition)
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n>
@@ -113,6 +132,7 @@ lua << EOF
   })
 EOF
 
+
 "アノテーションコメントを目立たせる
 lua << EOF
   require("todo-comments").setup({
@@ -128,7 +148,7 @@ lua << EOF
       HACK = { icon = " ", color = "warning" },
       WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
       PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-      NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+      NOTE = { icon = " ", color = "info", alt = { "INFO" } },
       TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
     },
     gui_style = {
@@ -136,9 +156,87 @@ lua << EOF
       bg = "BOLD", -- The gui style to use for the bg highlight group.
     },
     highlight = {
-      multiline = true,
-    }
+      multiline = true, -- enable multine todo comments
+      multiline_pattern = "^.", -- lua pattern to match the next multiline from the start of the matched keyword
+      multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
+      before = "", -- "fg" or "bg" or empty
+      keyword = "wide", -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+      after = "fg", -- "fg" or "bg" or empty
+      pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
+      comments_only = true, -- uses treesitter to match keywords in comments only
+      max_line_len = 400, -- ignore lines longer than this
+      exclude = {}, -- list of file types to exclude highlighting
+    },
  })
+EOF
+
+lua << EOF
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = {
+      "bash",
+      "c",
+      "cpp",
+      "css",
+      "dockerfile",
+      "go",
+      "gomod",
+      "gosum",
+      "gowork",
+      "graphql",
+      "html",
+      "java",
+      "javascript",
+      "json",
+      "lua",
+      "python",
+      "regex",
+      "rust",
+      "toml",
+      "tsx",
+      "typescript",
+      "yaml",
+      "vue",
+      "ruby",
+      "gitignore",
+      "vim",
+      "terraform",
+      "scss"
+    }, 
+
+    sync_install = false,
+
+    auto_install = true,
+
+    ignore_install = {},
+
+    highlight = {
+      enable = true, -- ハイライトを有効にする
+    },
+    textobjects = {
+      select = {
+        enable = true,
+        lookahead = true,
+        keymaps = {
+          ["af"] = "@function.outer",
+          ["if"] = "@function.inner",
+          ["ab"] = "@block.outer",
+          ["ib"] = "@block.inner",
+          ["al"] = "@loop.outer",
+          ["il"] = "@loop.inner",
+          ["ac"] = "@conditional.outer",
+          ["ic"] = "@conditional.inner",
+          ["aa"] = "@parameter.outer",
+          ["ia"] = "@parameter.inner"
+       }
+      },
+      swap = {
+        enable = false,
+      },
+      move = {
+        enable = false,
+      },
+    },
+  }
 EOF
 
 "lualineの設定
@@ -251,18 +349,30 @@ EOF
 nnoremap <Leader>p <cmd>Telescope find_files<cr>
 nnoremap <Leader>g <cmd>Telescope live_grep<cr>
 nnoremap <Leader>pp <cmd>Telescope frecency<cr>
+nnoremap <Leader>i <cmd>Telescope media_files<cr>
 inoremap <silent> <C-c> <cmd>Telescope close<cr>
 
 lua << EOF
-require('telescope').setup {
-  defaults = {
-    layout_config = {
-      height = 0.9,
-      width = 0.9,
+  require('telescope').setup {
+    defaults = {
+      layout_config = {
+        height = 0.9,
+        width = 0.9,
+      },
     },
+   extensions = {
+    media_files = {
+      -- filetypes whitelist
+      -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
+      filetypes = {"png", "webp", "jpg", "jpeg"},
+      -- find command (defaults to `fd`)
+      find_cmd = "rg"
+    }
+  },
+
   }
-}
-require('telescope').load_extension('frecency')
+  require('telescope').load_extension('frecency')
+  require('telescope').load_extension('media_files')
 EOF
 
 
@@ -320,9 +430,4 @@ augroup quickfix_enter
   autocmd FileType qf nnoremap <buffer> <CR> :call CloseQuickfixAndJump()<CR>
 augroup END
 
-"テーマを設定する
-set background=dark
-colorscheme kanagawa-wave
-
-highlight Visual ctermfg=black ctermbg=yellow gui=NONE guifg=black guibg=yellow
 
