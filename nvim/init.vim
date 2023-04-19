@@ -133,7 +133,11 @@ lua << EOF
           statusline = false
       },
       filesystem = {
-         follow_current_file = true,
+         filtered_items = {
+            visible = true, 
+            hide_dotfiles = false,
+            hide_gitignored = true,
+         }
       },
       buffers = {
             follow_current_file = true,
@@ -287,6 +291,16 @@ cmp.setup({
 })
 EOF
 
+"jsonを自動で整形する
+function! RunJqOnJsonSave()
+  if expand('%:e') ==# 'json'
+    silent !clear
+    silent execute ':%!jq . ' . shellescape(expand('%'))
+  endif
+endfunction
+
+autocmd BufWritePost * call RunJqOnJsonSave()
+
 "gitsignsの設定
 lua << EOF
 require('gitsigns').setup {
@@ -336,6 +350,27 @@ EOF
 "noiceの設定
 lua << EOF
 require("noice").setup({
+  cmdline = {
+    enabled = true, -- enables the Noice cmdline UI
+    view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
+    opts = {}, -- global options for the cmdline. See section on views
+    ---@type table<string, CmdlineFormat>
+    format = {
+      -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
+      -- view: (default is cmdline view)
+      -- opts: any options passed to the view
+      -- icon_hl_group: optional hl_group for the icon
+      -- title: set to anything or empty string to hide
+      cmdline = { pattern = "^:", icon = "", lang = "vim" },
+      search_down = { kind = "search", pattern = "^/", icon = "", lang = "regex" },
+      search_up = { kind = "search", pattern = "^%?", icon = "", lang = "regex" },
+      filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+      lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+      help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
+      input = {}, -- Used by input()
+      -- lua = false, -- to disable a format, set to `false`
+    },
+  },
   lsp = {
     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
     override = {
@@ -359,8 +394,8 @@ EOF
 nnoremap <Leader>p <cmd>Telescope find_files<cr>
 nnoremap <Leader>g <cmd>Telescope live_grep<cr>
 nnoremap <Leader>pp <cmd>Telescope frecency<cr>
-nnoremap <Leader>i <cmd>Telescope media_files<cr>
-inoremap <silent> <C-c> <cmd>Telescope close<cr>
+nnoremap <Leader>ii <cmd>Telescope media_files<cr>
+inoremap <silent><C-c> <cmd>Telescope close<cr>
 
 lua << EOF
   require('telescope').setup {
@@ -369,6 +404,7 @@ lua << EOF
         height = 0.9,
         width = 0.9,
       },
+      file_ignore_patterns = {"*/node_modules","graphql.schema.json","yarn.lock","*/gql.ts"}
     },
    extensions = {
     media_files = {
@@ -411,18 +447,44 @@ lua << EOF
           },
       },
       on_attach = function(client)
-          -- キーマッピングなどを設定する
+        -- キーマッピングなどを設定する
+        -- BufWritePreイベントでLspCodeActionSyncとLspDocumentFormatSyncを実行する
+        vim.cmd('autocmd BufWritePre <buffer> lua OrganizeImportsAndFormat()')
       end,
   }
+
+     function OrganizeImportsAndFormat()
+          local params = {
+              context = {
+                  diagnostics = {}
+              },
+              only = {"source.organizeImports"}
+          }
+
+          local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
+
+          for _, actions in ipairs(result) do
+              for _, action in ipairs(actions.result or {}) do
+                  if action.kind == "source.organizeImports" then
+                      vim.lsp.buf.execute_command(action)
+                      break
+                  end
+              end
+          end
+          vim.lsp.buf.format()
+    end
+    lspconfig.tsserver.setup{}
+
 EOF
 
 "保存時のフォーマット
-autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1500)
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<cr>
 nnoremap <silent> gb <C-o>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<cr>
 nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<cr>
 nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<cr>
+nnoremap <silent> gf <cmd>lua vim.lsp.buf.format()<cr>
+nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
 nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
 
 "quickfixでEnterを押したら閉じるようにする
