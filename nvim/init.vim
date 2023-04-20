@@ -1,4 +1,4 @@
-syntax enable
+
 set expandtab
 set number
 
@@ -23,11 +23,10 @@ call plug#begin()
     Plug 'nvim-lua/plenary.nvim'
 
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
-    Plug 'nvim-telescope/telescope-frecency.nvim'
-    Plug 'kkharji/sqlite.lua'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope-media-files.nvim'
+    Plug 'smartpde/telescope-recent-files'
 
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'BurntSushi/ripgrep'
@@ -75,6 +74,7 @@ nnoremap <Leader>l $
 nnoremap <S-t> :tabnew<CR>
 nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
+"pathと打ったらクリップボードにパスをコピーする
 nnoremap <silent> path :let @*=expand('%')<CR>
 nnoremap <C-n> :Neotree float reveal<CR>
 nnoremap <C-,> :ToggleTerm size=80 direction=float<CR><Esc>i
@@ -86,7 +86,8 @@ let g:EasyMotion_smartcase = 1  " Turn on case insensitive feature
 noremap <Leader>j <Plug>(easymotion-j)
 noremap <Leader>k <Plug>(easymotion-k)
 noremap <Leader>w <Plug>(easymotion-jumptoanywhere)
-noremap f <Plug>(easymotion-overwin-f2)
+noremap of <Plug>(easymotion-overwin-f2)
+noremap f <Plug>(easymotion-bd-f)
 
 
 "削除キーでヤンクしない
@@ -114,6 +115,7 @@ vnoremap il <Plug>(nvim-treesitter-textobjects-select-inner-loop)
 vnoremap ac <Plug>(nvim-treesitter-textobjects-select-a-condition)
 vnoremap ic <Plug>(nvim-treesitter-textobjects-select-inner-condition)
 vnoremap s :'<,'>Silicon ~/desktop/images/screenshots/code-{time:%Y-%m-%d-%H%M%S}.png<CR>
+vnoremap f <Plug>(easymotion-bd-f)
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n><CR>
@@ -393,7 +395,9 @@ EOF
 "Telescopeの設定
 nnoremap <Leader>p <cmd>Telescope find_files<cr>
 nnoremap <Leader>g <cmd>Telescope live_grep<cr>
-nnoremap <Leader>pp <cmd>Telescope frecency<cr>
+"recent_filesを<Leader>ppに割り当てる
+nnoremap <Leader>pp <cmd>lua require('telescope').extensions.recent_files.pick()<CR>
+nnoremap <Leader>b <cmd>Telescope buffers<cr>
 nnoremap <Leader>ii <cmd>Telescope media_files<cr>
 inoremap <silent><C-c> <cmd>Telescope close<cr>
 
@@ -413,12 +417,16 @@ lua << EOF
       filetypes = {"png", "webp", "jpg", "jpeg"},
       -- find command (defaults to `fd`)
       find_cmd = "rg"
+    },
+    recent_files = {
+      only_cwd = true,
     }
   },
 
+
   }
-  require('telescope').load_extension('frecency')
   require('telescope').load_extension('media_files')
+  require("telescope").load_extension("recent_files")
 EOF
 
 
