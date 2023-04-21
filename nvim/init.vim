@@ -21,7 +21,7 @@ call plug#begin()
     Plug 'rebelot/kanagawa.nvim' 
     Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-lua/plenary.nvim'
-
+    " telescope周り
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
@@ -54,6 +54,8 @@ call plug#begin()
     Plug 'segeljakt/vim-silicon'
     Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'jsborjesson/vim-uppercase-sql'
+
+    Plug 'epwalsh/obsidian.nvim'
 call plug#end()
 
 "テーマを設定する
