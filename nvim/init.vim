@@ -16,6 +16,7 @@ set fileencodings=utf-8,cp932
 set clipboard+=unnamedplus
 set modifiable
 set write
+set scrolloff=3
 
 call plug#begin()
     Plug 'rebelot/kanagawa.nvim' 
@@ -56,6 +57,7 @@ call plug#begin()
     Plug 'jsborjesson/vim-uppercase-sql'
     Plug 'hashivim/vim-terraform'
     Plug 'epwalsh/obsidian.nvim'
+    Plug 'mattn/vim-goimports'
 call plug#end()
 
 "テーマを設定する
@@ -456,31 +458,11 @@ lua << EOF
       },
       on_attach = function(client)
         -- キーマッピングなどを設定する
-        -- BufWritePreイベントでLspCodeActionSyncとLspDocumentFormatSyncを実行する
-        vim.cmd('autocmd BufWritePre <buffer> lua OrganizeImportsAndFormat()')
+        -- TODO:　Go以外の言語でもいい感じにする 
+        vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format()')
       end,
   }
 
-     function OrganizeImportsAndFormat()
-          local params = {
-              context = {
-                  diagnostics = {}
-              },
-              only = {"source.organizeImports"}
-          }
-
-          local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
-
-          for _, actions in ipairs(result) do
-              for _, action in ipairs(actions.result or {}) do
-                  if action.kind == "source.organizeImports" then
-                      vim.lsp.buf.execute_command(action)
-                      break
-                  end
-              end
-          end
-          vim.lsp.buf.format()
-    end
     lspconfig.tsserver.setup{}
 
 EOF
@@ -496,6 +478,7 @@ nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
 nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
 
 let g:terraform_fmt_on_save=1
+let g:goimports = 1
 
 "quickfixでEnterを押したら閉じるようにする
 function! CloseQuickfixAndJump()
