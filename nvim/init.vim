@@ -54,7 +54,7 @@ call plug#begin()
     Plug 'segeljakt/vim-silicon'
     Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'jsborjesson/vim-uppercase-sql'
-
+    Plug 'hashivim/vim-terraform'
     Plug 'epwalsh/obsidian.nvim'
 call plug#end()
 
@@ -424,8 +424,6 @@ lua << EOF
       only_cwd = true,
     }
   },
-
-
   }
   require('telescope').load_extension('media_files')
   require("telescope").load_extension("recent_files")
@@ -496,6 +494,8 @@ nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<cr>
 nnoremap <silent> gf <cmd>lua vim.lsp.buf.format()<cr>
 nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
 nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
+
+let g:terraform_fmt_on_save=1
 
 "quickfixでEnterを押したら閉じるようにする
 function! CloseQuickfixAndJump()
