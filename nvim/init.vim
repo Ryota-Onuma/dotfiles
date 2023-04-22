@@ -56,6 +56,7 @@ call plug#begin()
     Plug 'hashivim/vim-terraform'
     Plug 'epwalsh/obsidian.nvim'
     Plug 'mattn/vim-goimports'
+    Plug 'yuttie/comfortable-motion.vim'
 call plug#end()
 
 "テーマを設定する
@@ -90,7 +91,6 @@ noremap <Leader>k <Plug>(easymotion-k)
 noremap <Leader>w <Plug>(easymotion-jumptoanywhere)
 noremap of <Plug>(easymotion-overwin-f2)
 noremap f <Plug>(easymotion-bd-f)
-
 
 "削除キーでヤンクしない
 nnoremap x "_x
