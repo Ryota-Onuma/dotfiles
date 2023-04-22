@@ -26,7 +26,6 @@ call plug#begin()
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
-    Plug 'nvim-telescope/telescope-media-files.nvim'
     Plug 'smartpde/telescope-recent-files'
 
     Plug 'nvim-tree/nvim-web-devicons'
@@ -40,7 +39,7 @@ call plug#begin()
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-lua/completion-nvim'
     Plug 'github/copilot.vim'
-    Plug 'nvim-neo-tree/neo-tree.nvim'
+    Plug 'nvim-neo-tree/neo-tree.nvim', { 'on': 'Neotree' } " 読み込み遅いので遅延読み込みする
     Plug 'folke/noice.nvim'
     Plug 'MunifTanjim/nui.nvim'
     Plug 'tpope/vim-commentary'
@@ -131,8 +130,9 @@ autocmd TermOpen * setlocal nonumber
 lua  require("toggleterm").setup()
 
 "ファイラの設定
-lua << EOF
-  require("neo-tree").setup({
+function! SetupNeoTree()
+  lua << EOF
+    require("neo-tree").setup({
       popup_border_style = "rounded",
       source_selector = {
           winbar = false,
@@ -148,8 +148,15 @@ lua << EOF
       buffers = {
             follow_current_file = true,
       },
-  })
+    })
 EOF
+endfunction
+
+augroup neotree_settings
+  autocmd!
+  autocmd User Neotree call SetupNeoTree()
+augroup END
+
 
 lua require'alpha'.setup(require'alpha.themes.dashboard'.config)
 
@@ -402,7 +409,6 @@ nnoremap <Leader>g <cmd>Telescope live_grep<cr>
 "recent_filesを<Leader>ppに割り当てる
 nnoremap <Leader>pp <cmd>lua require('telescope').extensions.recent_files.pick()<CR>
 nnoremap <Leader>b <cmd>Telescope buffers<cr>
-nnoremap <Leader>ii <cmd>Telescope media_files<cr>
 inoremap <silent><C-c> <cmd>Telescope close<cr>
 
 lua << EOF
@@ -415,19 +421,11 @@ lua << EOF
       file_ignore_patterns = {"*/node_modules","graphql.schema.json","yarn.lock","*/gql.ts"}
     },
    extensions = {
-    media_files = {
-      -- filetypes whitelist
-      -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
-      filetypes = {"png", "webp", "jpg", "jpeg"},
-      -- find command (defaults to `fd`)
-      find_cmd = "rg"
-    },
     recent_files = {
       only_cwd = true,
     }
   },
   }
-  require('telescope').load_extension('media_files')
   require("telescope").load_extension("recent_files")
 EOF
 
