@@ -26,7 +26,6 @@ call plug#begin()
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
-    Plug 'smartpde/telescope-recent-files'
 
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'BurntSushi/ripgrep'
@@ -39,7 +38,7 @@ call plug#begin()
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-lua/completion-nvim'
     Plug 'github/copilot.vim'
-    Plug 'nvim-neo-tree/neo-tree.nvim', { 'on': 'Neotree' } " 読み込み遅いので遅延読み込みする
+    Plug 'nvim-neo-tree/neo-tree.nvim'
     Plug 'folke/noice.nvim'
     Plug 'MunifTanjim/nui.nvim'
     Plug 'tpope/vim-commentary'
@@ -51,7 +50,7 @@ call plug#begin()
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     Plug 'goolord/alpha-nvim'
-    Plug 'segeljakt/vim-silicon'
+    Plug 'segeljakt/vim-silicon', { 'on': 'Silicon'}
     Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'jsborjesson/vim-uppercase-sql'
     Plug 'hashivim/vim-terraform'
@@ -79,7 +78,7 @@ nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
 "pathと打ったらクリップボードにパスをコピーする
 nnoremap <silent> path :let @*=expand('%')<CR>
-nnoremap <C-n> :Neotree float reveal<CR>
+nnoremap <C-n> :Neotree float reveal toggle filesystem<CR>
 nnoremap <C-,> :ToggleTerm size=80 direction=float<CR><Esc>i
 nnoremap vv <C-v> 
 
@@ -130,33 +129,25 @@ autocmd TermOpen * setlocal nonumber
 lua  require("toggleterm").setup()
 
 "ファイラの設定
-function! SetupNeoTree()
-  lua << EOF
-    require("neo-tree").setup({
-      popup_border_style = "rounded",
-      source_selector = {
-          winbar = false,
-          statusline = false
-      },
-      filesystem = {
-         filtered_items = {
-            visible = true, 
-            hide_dotfiles = false,
-            hide_gitignored = true,
-         }
-      },
-      buffers = {
-            follow_current_file = true,
-      },
-    })
+lua << EOF
+require("neo-tree").setup({
+  popup_border_style = "rounded",
+  source_selector = {
+      winbar = false,
+      statusline = false
+  },
+  filesystem = {
+     filtered_items = {
+        visible = true, 
+        hide_dotfiles = false,
+        hide_gitignored = true,
+     }
+  },
+  buffers = {
+        follow_current_file = true,
+  },
+})
 EOF
-endfunction
-
-augroup neotree_settings
-  autocmd!
-  autocmd User Neotree call SetupNeoTree()
-augroup END
-
 
 lua require'alpha'.setup(require'alpha.themes.dashboard'.config)
 
@@ -386,7 +377,7 @@ require("noice").setup({
   },
   lsp = {
     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-    override = {
+   override = {
       ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
       ["vim.lsp.util.stylize_markdown"] = true,
       ["cmp.entry.get_documentation"] = true,
@@ -404,31 +395,30 @@ require("noice").setup({
 EOF
 
 "Telescopeの設定
-nnoremap <Leader>p <cmd>Telescope find_files<cr>
+nnoremap <Leader>p <cmd>Telescope find_files hidden=true<cr>
 nnoremap <Leader>g <cmd>Telescope live_grep<cr>
 "recent_filesを<Leader>ppに割り当てる
-nnoremap <Leader>pp <cmd>lua require('telescope').extensions.recent_files.pick()<CR>
-nnoremap <Leader>b <cmd>Telescope buffers<cr>
+nnoremap <Leader>pp <cmd>Telescope oldfiles cwd_only=true<cr>
+" nnoremap <Leader>b <cmd>Telescope buffers<cr>
+nnoremap <Leader>b <cmd>Telescope<cr>
 inoremap <silent><C-c> <cmd>Telescope close<cr>
 
 lua << EOF
-  require('telescope').setup {
+   require('telescope').setup {
     defaults = {
       layout_config = {
         height = 0.9,
         width = 0.9,
       },
-      file_ignore_patterns = {"*/node_modules","graphql.schema.json","yarn.lock","*/gql.ts"}
+      file_ignore_patterns = {".git/*","node_modules/","graphql.schema.json","**/yarn.lock","gql.ts"}
     },
    extensions = {
     recent_files = {
       only_cwd = true,
     }
-  },
+   }
   }
-  require("telescope").load_extension("recent_files")
 EOF
-
 
 "LSP周りの設定
 lua << EOF
