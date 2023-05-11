@@ -24,6 +24,8 @@ brew install rust
 
 brew install jq
 
+brew install python-lsp-server
+
 ```
 
 

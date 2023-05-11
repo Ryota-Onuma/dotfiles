@@ -469,6 +469,7 @@ lua << EOF
   }
 EOF
 
+" session_managerの設定
 lua << EOF
   local Path = require('plenary.path')
   require('session_manager').setup({
@@ -513,13 +514,25 @@ lua << EOF
           },
       },
       on_attach = function(client)
-        -- キーマッピングなどを設定する
+        -- キーマッピグなどを設定する
         -- TODO:　Go以外の言語でもいい感じにする 
         vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format()')
       end,
   }
 
     lspconfig.tsserver.setup{}
+    lspconfig.pylsp.setup{
+        settings = {
+            pylsp = {
+                plugins = {
+                    pycodestyle = {
+                        ignore = {'W391'},
+                        maxLineLength = 100
+                    }
+                }
+            }
+        }
+    }
 
 EOF
 
