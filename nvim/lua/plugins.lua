@@ -4,7 +4,30 @@ require("packer").startup(function()
   use 'wbthomason/packer.nvim'
   use 'github/copilot.vim'
   use 'lewis6991/gitsigns.nvim'
-  use  'folke/tokyonight.nvim'
+  use 'folke/tokyonight.nvim'
+  use "williamboman/mason.nvim"
+  use {
+    'folke/noice.nvim',
+     config = function()
+        require("noice").setup({
+          lsp = {
+            -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+            override = {
+              ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+              ["vim.lsp.util.stylize_markdown"] = true,
+              ["cmp.entry.get_documentation"] = true,
+            },
+          },
+          presets = {
+            bottom_search = false, -- use a classic bottom cmdline for search
+            command_palette = true, -- position the cmdline and popupmenu together
+            long_message_to_split = true, -- long messages will be sent to a split
+            inc_rename = false, -- enables an input dialog for inc-rename.nvim
+            lsp_doc_border = false, -- add a border to hover docs and signature help
+          },
+        })
+     end
+  }
   use {
     "nvim-neo-tree/neo-tree.nvim",
       branch = "v3.x",
@@ -42,5 +65,9 @@ require("packer").startup(function()
     'nvim-lualine/lualine.nvim',
      requires = { 'nvim-tree/nvim-web-devicons', opt = true }
   }
+  use { 'ibhagwan/fzf-lua',
+    requires = { 'kyazdani42/nvim-web-devicons' }
+  }
+  use 'airblade/vim-rooter'
   use 'easymotion/vim-easymotion'
 end)

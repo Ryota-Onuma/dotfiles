@@ -1,11 +1,17 @@
+vim.g.mapleader = " "
+
 vim.api.nvim_set_keymap('n', '<C-c>', ':q!<CR>',{})
 vim.api.nvim_set_keymap('n', 'vv', '<C-v>',{})
 vim.api.nvim_set_keymap('n', '<Leader>h', '^',{})
 vim.api.nvim_set_keymap('n', '<Leader>l', '$',{})
+vim.api.nvim_set_keymap('n', '<Leader>p', ':lua require("fzf-lua").files()<CR>',{silent = true})
+vim.api.nvim_set_keymap('n', '<Leader>pp', ':lua require("fzf-lua").oldfiles()<CR>',{silent = true})
+vim.api.nvim_set_keymap('n', '<Leader>g', ':lua require("fzf-lua").grep()<CR>',{silent = true})
 
 vim.api.nvim_set_keymap('x', 'c', 'y',{})
 vim.api.nvim_set_keymap('x', '<Leader>h', '^',{})
 vim.api.nvim_set_keymap('x', '<Leader>l', '$',{})
+
 
 -- easymotionの設定
 vim.g.EasyMotion_do_mapping = 0
@@ -19,3 +25,4 @@ vim.api.nvim_set_keymap('x', 'ff', '<Plug>(easymotion-overwin-f2)', {silent = tr
 vim.api.nvim_set_keymap('n', '<C-n>', ':Neotree float reveal<CR>', {silent = true})
 
 vim.api.nvim_set_keymap('i', 'jj', '<Esc>', {})
+

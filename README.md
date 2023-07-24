@@ -47,10 +47,11 @@ go install golang.org/x/tools/gopls@latest
 go install golang.org/x/tools/cmd/goimports@latest
 ```
 
-vimを開いてpluginをインストールする
+vimを開いてpluginを使えるようにする
 
 ```
 :PackerInstall
+:PackerCompile
 ```
 
 .zshrcに追加読み込みの設定を書く
