@@ -1,4 +1,3 @@
-syntax enable
 set expandtab
 set number
 
@@ -115,6 +114,9 @@ vnoremap il <Plug>(nvim-treesitter-textobjects-select-inner-loop)
 vnoremap ac <Plug>(nvim-treesitter-textobjects-select-a-condition)
 vnoremap ic <Plug>(nvim-treesitter-textobjects-select-inner-condition)
 vnoremap s :'<,'>Silicon ~/desktop/images/screenshots/code-{time:%Y-%m-%d-%H%M%S}.png<CR>
+vnoremap f <Plug>(easymotion-bd-f)
+vnoremap <Leader>h ^
+vnoremap <Leader>l $
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n><CR>
@@ -123,7 +125,7 @@ tnoremap <C-,> <C-\><C-n>:close<CR>
 autocmd TermOpen * setlocal norelativenumber
 autocmd TermOpen * setlocal nonumber
 
-lua  require("toggleterm").setup()
+lua require("toggleterm").setup()
 
 "ファイラの設定
 lua << EOF
@@ -412,9 +414,23 @@ lua << EOF
           },
       },
       on_attach = function(client)
-          -- キーマッピングなどを設定する
+          vim.g.goimports = 1
       end,
   }
+
+    lspconfig.tsserver.setup{}
+    lspconfig.pylsp.setup{
+        settings = {
+            pylsp = {
+                plugins = {
+                    pycodestyle = {
+                        ignore = {'W391'},
+                        maxLineLength = 100
+                    }
+                }
+            }
+        }
+    }
 EOF
 
 require"octo".setup({
@@ -545,7 +561,13 @@ nnoremap <silent> gb <C-o>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<cr>
 nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<cr>
 nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<cr>
+nnoremap <silent> gf <cmd>lua vim.lsp.buf.format()<cr>
+nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
+nnoremap <silent> gk <cmd>lua vim.diagnostic.open_float()<cr>
 nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
+autocmd BufWritePre <buffer>lua vim.lsp.buf.format()
+
+let g:terraform_fmt_on_save=1
 
 "quickfixでEnterを押したら閉じるようにする
 function! CloseQuickfixAndJump()

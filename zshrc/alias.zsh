@@ -23,6 +23,6 @@ alias dcr='docker-compose run --rm'
 alias dce="docker-compose exec"
 alias dup="docker-compose up"
 alias dc="docker-compose"
-alias vim='nvim'
+alias vim='nvimWithSwapCheck'
 
 alias prs="fetchReviewAssignedPRs"
