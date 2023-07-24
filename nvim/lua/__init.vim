@@ -1,4 +1,4 @@
-
+syntax enable
 set expandtab
 set number
 
@@ -16,15 +16,18 @@ set fileencodings=utf-8,cp932
 set clipboard+=unnamedplus
 set modifiable
 set write
-set scrolloff=3
 
 call plug#begin()
     Plug 'rebelot/kanagawa.nvim' 
     Plug 'lewis6991/gitsigns.nvim'
     Plug 'nvim-lua/plenary.nvim'
-    " telescope周り
+
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+    Plug 'nvim-telescope/telescope-frecency.nvim'
+    Plug 'kkharji/sqlite.lua'
     Plug 'nvim-lua/popup.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope-media-files.nvim'
 
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'BurntSushi/ripgrep'
@@ -44,18 +47,15 @@ call plug#begin()
     Plug 'jiangmiao/auto-pairs'
     Plug 'easymotion/vim-easymotion'
     Plug 'nvim-lualine/lualine.nvim'
+    Plug 'nvim-lua/plenary.nvim'
     Plug 'folke/todo-comments.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     Plug 'goolord/alpha-nvim'
-    Plug 'segeljakt/vim-silicon', { 'on': 'Silicon'}
+    Plug 'segeljakt/vim-silicon'
     Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
     Plug 'jsborjesson/vim-uppercase-sql'
-    Plug 'hashivim/vim-terraform'
-    Plug 'epwalsh/obsidian.nvim'
-    Plug 'mattn/vim-goimports'
-    Plug 'yuttie/comfortable-motion.vim'
-    Plug 'Shatur/neovim-session-manager'
+    Plug 'pwntester/octo.nvim'
 call plug#end()
 
 "テーマを設定する
@@ -76,9 +76,8 @@ nnoremap <Leader>l $
 nnoremap <S-t> :tabnew<CR>
 nnoremap <S-w> :tabclose<CR>
 nnoremap <S-tab> :tabnext<CR>
-"pathと打ったらクリップボードにパスをコピーする
 nnoremap <silent> path :let @*=expand('%')<CR>
-nnoremap <silent> <C-n> :Neotree float reveal toggle filesystem<CR>
+nnoremap <C-n> :Neotree float reveal<CR>
 nnoremap <C-,> :ToggleTerm size=80 direction=float<CR><Esc>i
 nnoremap vv <C-v> 
 
@@ -88,8 +87,8 @@ let g:EasyMotion_smartcase = 1  " Turn on case insensitive feature
 noremap <Leader>j <Plug>(easymotion-j)
 noremap <Leader>k <Plug>(easymotion-k)
 noremap <Leader>w <Plug>(easymotion-jumptoanywhere)
-noremap of <Plug>(easymotion-overwin-f2)
-noremap f <Plug>(easymotion-bd-f)
+noremap f <Plug>(easymotion-overwin-f2)
+
 
 "削除キーでヤンクしない
 nnoremap x "_x
@@ -116,7 +115,6 @@ vnoremap il <Plug>(nvim-treesitter-textobjects-select-inner-loop)
 vnoremap ac <Plug>(nvim-treesitter-textobjects-select-a-condition)
 vnoremap ic <Plug>(nvim-treesitter-textobjects-select-inner-condition)
 vnoremap s :'<,'>Silicon ~/desktop/images/screenshots/code-{time:%Y-%m-%d-%H%M%S}.png<CR>
-vnoremap f <Plug>(easymotion-bd-f)
 
 "Terminalモード時
 tnoremap <Esc> <C-\><C-n><CR>
@@ -129,123 +127,22 @@ lua  require("toggleterm").setup()
 
 "ファイラの設定
 lua << EOF
-require("neo-tree").setup({
-  popup_border_style = "rounded",
-  source_selector = {
-      winbar = false,
-      statusline = false
-  },
-  filesystem = {
-     filtered_items = {
-        visible = true, 
-        hide_dotfiles = false,
-        hide_gitignored = true,
-     }
-  },
-  buffers = {
-        follow_current_file = true,
-  },
-})
+  require("neo-tree").setup({
+      popup_border_style = "rounded",
+      source_selector = {
+          winbar = false,
+          statusline = false
+      },
+      filesystem = {
+         follow_current_file = true,
+      },
+      buffers = {
+            follow_current_file = true,
+      },
+  })
 EOF
 
 lua require'alpha'.setup(require'alpha.themes.dashboard'.config)
-
-" noiceの設定
-lua << EOF
-require("noice").setup({
-  cmdline = {
-    enabled = true, 
-    view = "cmdline_popup", 
-    opts = {},
-    format = {
-      cmdline = { pattern = "^:", icon = "", lang = "vim" },
-      search_down = { kind = "search", pattern = "^/", icon = "", lang = "regex" },
-      search_up = { kind = "search", pattern = "^%?", icon = "", lang = "regex" },
-      filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
-      lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
-      help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
-      input = {}, 
-    },
-  },
-  messages = {
-    enabled = true, 
-    view = "notify", -- default view for messages
-    view_error = "notify", -- view for errors
-    view_warn = "notify", -- view for warnings
-    view_history = "messages", -- view for :messages
-    view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
-  },
-  popupmenu = {
-    enabled = true,
-    backend = "nui", 
-    kind_icons = {}, 
-  },
-  commands = {
-    history = {
-      -- options for the message history that you get with `:Noice`
-      view = "split",
-      opts = { enter = true, format = "details" },
-      filter = {
-        any = {
-          { event = "notify" },
-          { error = true },
-          { warning = true },
-          { event = "msg_show", kind = { "" } },
-          { event = "lsp", kind = "message" },
-        },
-      },
-    },
-    -- :Noice last
-    last = {
-      view = "popup",
-      opts = { enter = true, format = "details" },
-      filter = {
-        any = {
-          { event = "notify" },
-          { error = true },
-          { warning = true },
-          { event = "msg_show", kind = { "" } },
-          { event = "lsp", kind = "message" },
-        },
-      },
-      filter_opts = { count = 1 },
-    },
-    -- :Noice errors
-    errors = {
-      -- options for the message history that you get with `:Noice`
-      view = "popup",
-      opts = { enter = true, format = "details" },
-      filter = { error = true },
-      filter_opts = { reverse = true },
-    },
-  },
-  notify = {
-    enabled = true,
-    view = "notify",
-  },
-  lsp = {
-    progress = {
-      enabled = true,
-      format = "lsp_progress",
-      format_done = "lsp_progress_done",
-      throttle = 1000 / 30,
-      view = "mini",
-   },
-   override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
-    },
-  },
-  presets = {
-    bottom_search = false, 
-    command_palette = true, 
-    long_message_to_split = true,
-    inc_rename = false, 
-    lsp_doc_border = false, 
-  },
-})
-EOF
 
 "アノテーションコメントを目立たせる
 lua << EOF
@@ -391,16 +288,6 @@ cmp.setup({
 })
 EOF
 
-"jsonを自動で整形する
-function! RunJqOnJsonSave()
-  if expand('%:e') ==# 'json'
-    silent !clear
-    silent execute ':%!jq . ' . shellescape(expand('%'))
-  endif
-endfunction
-
-autocmd BufWritePost * call RunJqOnJsonSave()
-
 "gitsignsの設定
 lua << EOF
 require('gitsigns').setup {
@@ -447,47 +334,58 @@ require('gitsigns').setup {
 }
 EOF
 
+"noiceの設定
+lua << EOF
+require("noice").setup({
+  lsp = {
+    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
+    },
+  },
+  -- you can enable a preset for easier configuration
+  presets = {
+    bottom_search = false, -- use a classic bottom cmdline for search
+    command_palette = true, -- position the cmdline and popupmenu together
+    long_message_to_split = true, -- long messages will be sent to a split
+    inc_rename = false, -- enables an input dialog for inc-rename.nvim
+    lsp_doc_border = false, -- add a border to hover docs and signature help
+  },
+})
+EOF
+
 "Telescopeの設定
-nnoremap <Leader>p <cmd>Telescope find_files hidden=true<cr>
+nnoremap <Leader>p <cmd>Telescope find_files<cr>
 nnoremap <Leader>g <cmd>Telescope live_grep<cr>
-"recent_filesを<Leader>ppに割り当てる
-nnoremap <Leader>pp <cmd>Telescope oldfiles cwd_only=true<cr>
-" nnoremap <Leader>b <cmd>Telescope buffers<cr>
-nnoremap <Leader>b <cmd>Telescope<cr>
-inoremap <silent><C-c> <cmd>Telescope close<cr>
+nnoremap <Leader>pp <cmd>Telescope frecency<cr>
+nnoremap <Leader>i <cmd>Telescope media_files<cr>
+inoremap <silent> <C-c> <cmd>Telescope close<cr>
 
 lua << EOF
-   require('telescope').setup {
+  require('telescope').setup {
     defaults = {
       layout_config = {
         height = 0.9,
         width = 0.9,
       },
-      file_ignore_patterns = {".git/*","node_modules/","graphql.schema.json","**/yarn.lock","gql.ts","schemaspy/*"}
     },
-    extensions = {}
+   extensions = {
+    media_files = {
+      -- filetypes whitelist
+      -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
+      filetypes = {"png", "webp", "jpg", "jpeg"},
+      -- find command (defaults to `fd`)
+      find_cmd = "rg"
+    }
+  },
+
   }
+  require('telescope').load_extension('frecency')
+  require('telescope').load_extension('media_files')
 EOF
 
-" session_managerの設定
-lua << EOF
-  local Path = require('plenary.path')
-  require('session_manager').setup({
-    sessions_dir = Path:new(vim.fn.stdpath('data'), 'sessions'), -- The directory where the session files will be saved.
-    path_replacer = '__', -- The character to which the path separator will be replaced for session files.
-    colon_replacer = '++', -- The character to which the colon symbol will be replaced for session files.
-    autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
-    autosave_last_session = true, -- Automatically save last session on exit and on session switch.
-    autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
-    autosave_ignore_dirs = {}, -- A list of directories where the session will not be autosaved.
-    autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
-      'gitcommit',
-    },
-    autosave_ignore_buftypes = {}, -- All buffers of these bufer types will be closed before the session is saved.
-    autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
-    max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
-  })
-EOF
 
 "LSP周りの設定
 lua << EOF
@@ -514,40 +412,140 @@ lua << EOF
           },
       },
       on_attach = function(client)
-        -- キーマッピグなどを設定する
-        -- TODO:　Go以外の言語でもいい感じにする 
-        vim.cmd('autocmd BufWritePre <buffer> lua vim.lsp.buf.format()')
+          -- キーマッピングなどを設定する
       end,
   }
-
-    lspconfig.tsserver.setup{}
-    lspconfig.pylsp.setup{
-        settings = {
-            pylsp = {
-                plugins = {
-                    pycodestyle = {
-                        ignore = {'W391'},
-                        maxLineLength = 100
-                    }
-                }
-            }
-        }
-    }
-
 EOF
 
+require"octo".setup({
+  default_remote = {"upstream", "origin"}; -- order to try remotes
+  ssh_aliases = {},                        -- SSH aliases. e.g. `ssh_aliases = {["github.com-work"] = "github.com"}`
+  reaction_viewer_hint_icon = "";         -- marker for user reactions
+  user_icon = " ";                        -- user icon
+  timeline_marker = "";                   -- timeline marker
+  timeline_indent = "2";                   -- timeline indentation
+  right_bubble_delimiter = "";            -- bubble delimiter
+  left_bubble_delimiter = "";             -- bubble delimiter
+  github_hostname = "";                    -- GitHub Enterprise host
+  snippet_context_lines = 4;               -- number or lines around commented lines
+  gh_env = {},                             -- extra environment variables to pass on to GitHub CLI, can be a table or function returning a table
+  timeout = 5000,                          -- timeout for requests between the remote server
+  ui = {
+    use_signcolumn = true,                 -- show "modified" marks on the sign column
+  },
+  issues = {
+    order_by = {                           -- criteria to sort results of `Octo issue list`
+      field = "CREATED_AT",                -- either COMMENTS, CREATED_AT or UPDATED_AT (https://docs.github.com/en/graphql/reference/enums#issueorderfield)
+      direction = "DESC"                   -- either DESC or ASC (https://docs.github.com/en/graphql/reference/enums#orderdirection)
+    }
+  },
+  pull_requests = {
+    order_by = {                           -- criteria to sort the results of `Octo pr list`
+      field = "CREATED_AT",                -- either COMMENTS, CREATED_AT or UPDATED_AT (https://docs.github.com/en/graphql/reference/enums#issueorderfield)
+      direction = "DESC"                   -- either DESC or ASC (https://docs.github.com/en/graphql/reference/enums#orderdirection)
+    },
+    always_select_remote_on_create = "false" -- always give prompt to select base remote repo when creating PRs
+  },
+  file_panel = {
+    size = 10,                             -- changed files panel rows
+    use_icons = true                       -- use web-devicons in file panel (if false, nvim-web-devicons does not need to be installed)
+  },
+  mappings = {
+    pull_request = {
+      checkout_pr = { lhs = "<po", desc = "checkout PR" },
+      merge_pr = { lhs = "<pm", desc = "merge commit PR" },
+      squash_and_merge_pr = { lhs = "<psm", desc = "squash and merge PR" },
+      list_commits = { lhs = "<pc", desc = "list PR commits" },
+      list_changed_files = { lhs = "<pf", desc = "list PR changed files" },
+      show_pr_diff = { lhs = "<pd", desc = "show PR diff" },
+      add_reviewer = { lhs = "<va", desc = "add reviewer" },
+      remove_reviewer = { lhs = "<vd", desc = "remove reviewer request" },
+      close_issue = { lhs = "<ic", desc = "close PR" },
+      reopen_issue = { lhs = "<io", desc = "reopen PR" },
+      list_issues = { lhs = "<il", desc = "list open issues on same repo" },
+      reload = { lhs = "<C-r>", desc = "reload PR" },
+      open_in_browser = { lhs = "<C-b>", desc = "open PR in browser" },
+      copy_url = { lhs = "<C-y>", desc = "copy url to system clipboard" },
+      goto_file = { lhs = "gf", desc = "go to file" },
+      add_assignee = { lhs = "<aa", desc = "add assignee" },
+      remove_assignee = { lhs = "<ad", desc = "remove assignee" },
+      create_label = { lhs = "<lc", desc = "create label" },
+      add_label = { lhs = "<la", desc = "add label" },
+      remove_label = { lhs = "<ld", desc = "remove label" },
+      goto_issue = { lhs = "<gi", desc = "navigate to a local repo issue" },
+      add_comment = { lhs = "<ca", desc = "add comment" },
+      delete_comment = { lhs = "<cd", desc = "delete comment" },
+      next_comment = { lhs = "]c", desc = "go to next comment" },
+      prev_comment = { lhs = "[c", desc = "go to previous comment" },
+      react_hooray = { lhs = "<rp", desc = "add/remove 🎉 reaction" },
+      react_heart = { lhs = "<rh", desc = "add/remove ❤️ reaction" },
+      react_eyes = { lhs = "<re", desc = "add/remove 👀 reaction" },
+      react_thumbs_up = { lhs = "<r+", desc = "add/remove 👍 reaction" },
+      react_thumbs_down = { lhs = "<r-", desc = "add/remove 👎 reaction" },
+      react_rocket = { lhs = "<rr", desc = "add/remove 🚀 reaction" },
+      react_laugh = { lhs = "<rl", desc = "add/remove 😄 reaction" },
+      react_confused = { lhs = "<rc", desc = "add/remove 😕 reaction" },
+    },
+    review_thread = {
+      goto_issue = { lhs = "<gi", desc = "navigate to a local repo issue" },
+      add_comment = { lhs = "<ca", desc = "add comment" },
+      add_suggestion = { lhs = "<sa", desc = "add suggestion" },
+      delete_comment = { lhs = "<cd", desc = "delete comment" },
+      next_comment = { lhs = "]c", desc = "go to next comment" },
+      prev_comment = { lhs = "[c", desc = "go to previous comment" },
+      select_next_entry = { lhs = "]q", desc = "move to previous changed file" },
+      select_prev_entry = { lhs = "[q", desc = "move to next changed file" },
+      close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+      react_hooray = { lhs = "<rp", desc = "add/remove 🎉 reaction" },
+      react_heart = { lhs = "<rh", desc = "add/remove ❤️ reaction" },
+      react_eyes = { lhs = "<re", desc = "add/remove 👀 reaction" },
+      react_thumbs_up = { lhs = "<r+", desc = "add/remove 👍 reaction" },
+      react_thumbs_down = { lhs = "<r-", desc = "add/remove 👎 reaction" },
+      react_rocket = { lhs = "<rr", desc = "add/remove 🚀 reaction" },
+      react_laugh = { lhs = "<rl", desc = "add/remove 😄 reaction" },
+      react_confused = { lhs = "<rc", desc = "add/remove 😕 reaction" },
+    },
+    submit_win = {
+      approve_review = { lhs = "<C-a>", desc = "approve review" },
+      comment_review = { lhs = "<C-m>", desc = "comment review" },
+      request_changes = { lhs = "<C-r>", desc = "request changes review" },
+      close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+    },
+    review_diff = {
+      add_review_comment = { lhs = "<ca", desc = "add a new review comment" },
+      add_review_suggestion = { lhs = "<sa", desc = "add a new review suggestion" },
+      focus_files = { lhs = "<leader>e", desc = "move focus to changed file panel" },
+      toggle_files = { lhs = "<leader>b", desc = "hide/show changed files panel" },
+      next_thread = { lhs = "]t", desc = "move to next thread" },
+      prev_thread = { lhs = "[t", desc = "move to previous thread" },
+      select_next_entry = { lhs = "]q", desc = "move to previous changed file" },
+      select_prev_entry = { lhs = "[q", desc = "move to next changed file" },
+      close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+      toggle_viewed = { lhs = "<leader><", desc = "toggle viewer viewed state" },
+    },
+    file_panel = {
+      next_entry = { lhs = "j", desc = "move to next changed file" },
+      prev_entry = { lhs = "k", desc = "move to previous changed file" },
+      select_entry = { lhs = "<cr>", desc = "show selected changed file diffs" },
+      refresh_files = { lhs = "R", desc = "refresh changed files panel" },
+      focus_files = { lhs = "<leader>e", desc = "move focus to changed file panel" },
+      toggle_files = { lhs = "<leader>b", desc = "hide/show changed files panel" },
+      select_next_entry = { lhs = "]q", desc = "move to previous changed file" },
+      select_prev_entry = { lhs = "[q", desc = "move to next changed file" },
+      close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
+      toggle_viewed = { lhs = "<leader><space>", desc = "toggle viewer viewed state" },
+    }
+  }
+})
+
 "保存時のフォーマット
+autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1500)
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<cr>
 nnoremap <silent> gb <C-o>
 nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<cr>
 nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<cr>
 nnoremap <silent> gt <cmd>lua vim.lsp.buf.type_definition()<cr>
-nnoremap <silent> gf <cmd>lua vim.lsp.buf.format()<cr>
-nnoremap <silent> ga <cmd>lua vim.lsp.buf.code_action()<cr>
 nnoremap <silent> K <cmd>lua vim.lsp.buf.hover()<cr>
-
-let g:terraform_fmt_on_save=1
-let g:goimports = 1
 
 "quickfixでEnterを押したら閉じるようにする
 function! CloseQuickfixAndJump()
