@@ -5,7 +5,18 @@ require("packer").startup(function()
   use 'github/copilot.vim'
   use 'lewis6991/gitsigns.nvim'
   use 'folke/tokyonight.nvim'
+  use 'tpope/vim-commentary'
   use "williamboman/mason.nvim"
+  use "neovim/nvim-lspconfig"
+  use {
+    "jay-babu/mason-null-ls.nvim",
+    requires = { 
+      "williamboman/mason.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
+      "nvim-lua/plenary.nvim"
+    },
+  }
+  use  "williamboman/mason-lspconfig.nvim"
   use {
     'folke/noice.nvim',
      config = function()
@@ -68,6 +79,6 @@ require("packer").startup(function()
   use { 'ibhagwan/fzf-lua',
     requires = { 'kyazdani42/nvim-web-devicons' }
   }
-  use 'airblade/vim-rooter'
+  use 'goolord/alpha-nvim'
   use 'easymotion/vim-easymotion'
 end)

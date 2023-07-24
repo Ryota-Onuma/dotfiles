@@ -1,3 +1,5 @@
 require "plugins"
-require "config"
 require "mappings"
+require "config"
+require "alpha-config"
+require "mason-config"

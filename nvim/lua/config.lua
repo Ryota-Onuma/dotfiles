@@ -31,20 +31,73 @@ require('lualine').setup {
         lualine_z = {'selectioncount'}
     },
 }
-require("mason").setup()
+
+
+require('gitsigns').setup {
+    signs = {
+      add          = { text = '+' },
+      change       = { text = '|' },
+      delete       = { text = '-' },
+      topdelete    = { text = '‾' },
+      changedelete = { text = '~' },
+      untracked    = { text = '┆' },
+    },
+    signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+    numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
+    linehl     = true, -- Toggle with `:Gitsigns toggle_linehl`
+    word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+    watch_gitdir = {
+      interval = 1000,
+      follow_files = true
+    },
+    attach_to_untracked = true,
+    current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+    current_line_blame_opts = {
+      virt_text = true,
+      virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+      delay = 1000,
+      ignore_whitespace = false,
+    },
+    current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+    sign_priority = 6,
+    update_debounce = 100,
+    status_formatter = nil, -- Use default
+    max_file_length = 40000, -- Disable if file is longer than this (in lines)
+    preview_config = {
+      -- Options passed to nvim_open_win
+      border = 'single',
+      style = 'minimal',
+      relative = 'cursor',
+      row = 0,
+      col = 1
+    },
+    yadm = {
+      enable = false
+    }
+}
 
 require'fzf-lua'.setup({
-  winopts = {
-    height     = 0.85,     -- window height
-    width      = 0.80,     -- window width
-    row        = 0.35,     -- window row position (0=top, 1=bottom)
-    col        = 0.50,     -- window col position (0=left, 1=right)
-    border     = 'rounded', -- 'none', 'single', 'double', 'thicc' or 'rounded'
-    fullscreen = false,    -- start fullscreen?
-  }
+  files               = {
+    prompt       = 'Files: ',
+    multiprocess = true, 
+    git_icons    = true, 
+    file_icons   = true, 
+    color_icons  = true, 
+    find_opts    = [[-type f -not -path '*/\.git/*' -printf '%P\n']],
+    rg_opts      = "--color=never --files --hidden --follow -g '!.git'",
+    fd_opts      = "--color=never --type f --hidden --follow --exclude .git",
+},
+  oldfiles            = {
+    prompt                  = 'History: ',
+    cwd_only                = true,
+    stat_file               = true, -- verify files exist on disk
+    include_current_session = true, -- include bufs from current session
+},
 })
 
 vim.cmd [[
-highlight FzfLuaNormal guibg=#383850
-highlight FzfLuaBorder guibg=#383850
+highlight FzfLuaNormal guibg=#1a1b26
+highlight FzfLuaBorder guibg=#1a1b26
 ]]
+
+require'alpha'.setup(require'alpha.themes.dashboard'.config)
