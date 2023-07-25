@@ -1,5 +1,5 @@
-require "plugins"
-require "mappings"
-require "config"
-require "alpha-config"
-require "mason-config"
+require("plugins")
+require("mappings")
+require("config")
+require("alpha-config")
+require("mason-config")
