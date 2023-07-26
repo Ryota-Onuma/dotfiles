@@ -8,6 +8,7 @@ require("packer").startup(function()
 	use("tpope/vim-commentary")
 	use("williamboman/mason.nvim")
 	use("neovim/nvim-lspconfig")
+	use("hrsh7th/cmp-nvim-lsp")
 	use({
 		"jay-babu/mason-null-ls.nvim",
 		requires = {
