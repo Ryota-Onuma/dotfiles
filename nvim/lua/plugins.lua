@@ -39,6 +39,9 @@ require("packer").startup(function()
 			})
 		end,
 	})
+	use("hrsh7th/nvim-cmp")
+	use("L3MON4D3/LuaSnip")
+	use("saadparwaiz1/cmp_luasnip")
 	use({
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",

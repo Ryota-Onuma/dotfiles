@@ -61,3 +61,26 @@ null_ls.setup({
 })
 
 vim.cmd([[autocmd BufWritePre * lua vim.lsp.buf.format(nil, 1500)]])
+local cmp = require("cmp")
+
+cmp.setup({
+	snippet = {
+		expand = function(args)
+			require("luasnip").lsp_expand(args.body)
+		end,
+	},
+	mapping = {
+		["<Up>"] = cmp.mapping.select_prev_item(),
+		["<Down>"] = cmp.mapping.select_next_item(),
+		["<C-u>"] = cmp.mapping.scroll_docs(-4),
+		["<C-n>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(),
+		["<C-c>"] = cmp.mapping.close(),
+		["<CR>"] = cmp.mapping.confirm({ select = true }),
+	},
+	sources = {
+		{ name = "buffer" },
+		{ name = "nvim_lsp" },
+		{ name = "luasnip" },
+	},
+})
