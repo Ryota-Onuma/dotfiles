@@ -1,7 +1,7 @@
 require("mason").setup()
 
 require("mason-null-ls").setup({
-	ensure_installed = { "stylua", "jq", "goimports", "gofumpt", "sqlfmt", "yamlfmt", "prettier", "black" },
+	ensure_installed = { "stylua", "jq", "goimports", "gofumpt", "sql-formatter", "yamlfmt", "prettier", "black" },
 	handlers = {},
 })
 
@@ -117,7 +117,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.jq,
 		null_ls.builtins.formatting.goimports,
 		null_ls.builtins.formatting.yamlfmt,
-		null_ls.builtins.formatting.sqlfmt,
+		null_ls.builtins.formatting.sqlformat,
 		null_ls.builtins.formatting.gofumpt,
 		null_ls.builtins.formatting.black,
 		null_ls.builtins.diagnostics.eslint,
