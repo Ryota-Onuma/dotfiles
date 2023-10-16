@@ -24,14 +24,22 @@ mason_lspconfig.setup({
 		"sqlls",
 		"tflint",
 		"tsserver",
-		"yamlls",
 	},
 })
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-vim.cmd([[autocmd BufWritePre * lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype go autocmd BufWritePre *.go lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype javascript autocmd BufWritePre *.js lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype json autocmd BufWritePre *.json lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype lua autocmd BufWritePre *.lua lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype python autocmd BufWritePre *.py lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype typescript autocmd BufWritePre *.ts lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype yaml autocmd BufWritePre *.yaml lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype yml autocmd BufWritePre *.yml lua vim.lsp.buf.format(nil, 1500)]])
+vim.cmd([[autocmd Filetype sql autocmd BufWritePre *.sql lua vim.lsp.buf.format(nil, 1500)]])
+
 
 local lspconfig = require("lspconfig")
 lspconfig.cssls.setup({
@@ -80,9 +88,6 @@ lspconfig.tflint.setup({
 	capabilities = capabilities,
 })
 lspconfig.tsserver.setup({
-	capabilities = capabilities,
-})
-lspconfig.yamlls.setup({
 	capabilities = capabilities,
 })
 

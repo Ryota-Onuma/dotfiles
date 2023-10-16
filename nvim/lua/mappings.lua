@@ -10,14 +10,30 @@ vim.api.nvim_set_keymap("x", "<Leader>l", "$", {})
 vim.api.nvim_set_keymap("x", "<BS>", '"_x', {})
 vim.api.nvim_set_keymap("i", "jj", "<Esc>", {})
 
+local get_relative_path = function()
+  local current_file = vim.fn.expand("%:p")                                    -- 絶対パスを取得
+  local vim_current_dir = vim.fn.getcwd() .. "/"
+  local relative_path = current_file:gsub("^" .. vim.pesc(vim_current_dir), "") -- パスからVimのカレントディレクトリ部分を削除
+  return relative_path
+end
+
+_G.get_relative_path = get_relative_path
+
+vim.api.nvim_set_keymap(
+  "n",
+  "here",
+  ':let @* = luaeval("_G.get_relative_path()")<CR>',
+  { noremap = true, silent = true }
+)
+
 -- fzf-luaの設定
 vim.api.nvim_set_keymap("n", "<Leader>p", ':lua require("fzf-lua").files()<CR>', { silent = true })
 vim.api.nvim_set_keymap("n", "<Leader>pp", ':lua require("fzf-lua").oldfiles()<CR>', { silent = true })
 vim.api.nvim_set_keymap(
-	"n",
-	"<Leader>g",
-	':lua require("fzf-lua").live_grep({ prompt="Found files> "})<CR>',
-	{ silent = true }
+  "n",
+  "<Leader>g",
+  ':lua require("fzf-lua").live_grep({ prompt="Found files> "})<CR>',
+  { silent = true }
 )
 
 -- lspの設定

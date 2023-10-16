@@ -16,7 +16,6 @@ vim.cmd("set write")
 vim.cmd("set shortmess+=F")
 vim.cmd("set laststatus=0")
 
-vim.cmd.colorscheme("tokyonight-night")
 vim.cmd("highlight visual ctermfg=black ctermbg=red gui=none guifg=black guibg=red")
 require("lualine").setup({
 	options = {
