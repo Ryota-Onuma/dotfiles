@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+         {
+            "apiVersion": 2,
+            "name": "Start debug session",
+            "type": "go",
+            "request": "attach",
+            "mode": "remote",
+            "remotePath": "/go/src", // コンテナでデバッグ対象のコードがあるパス
+            "port": 5050, // dapで接続するデバッグサーバーのポート
+            "host": "localhost",
+            "cwd": "${workspaceFolder}",// ホスト側のデバッグ対象のコードがあるパス。remotePathに対応させる
+            "showLog": true
+        }
+    ]
+}

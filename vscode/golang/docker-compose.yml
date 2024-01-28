@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  go-server:  # ../docker-compose.ymlに定義されているデバッグ対象のサービス名を指定する
+    ports:
+      - "5050:5050" #delveサーバーが起動しているポートをポートフォワードする
+    command: sleep infinity
