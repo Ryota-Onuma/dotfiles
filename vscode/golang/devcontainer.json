@@ -1,12 +1,19 @@
 {
 	"name": "Go Debugger",
 	"dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
-	"service": "go-server", // ../docker-compose.ymlに定義されているデバッグ対象のサービス名を指定する
+	"service": "go-server", // 都度入りたい../docker-compose.ymlのサービス名を指定する
 	"workspaceFolder": "/go/src/", // ../docker-compose.yml でバインドマウントしているパスを指定する
 	"customizations": {
 		"vscode": {	
 			"extensions": [
-				"golang.go"
+				"golang.go",
+				"github.copilot",
+				"tamasfe.even-better-toml",
+				"graphql.vscode-graphql-syntax",
+				"redhat.vscode-yaml",
+				"github.vscode-pull-request-github",
+				"github.vscode-github-actions",
+				"ms-azuretools.vscode-docker"
 			],
 			"settings": {
 				"go.gocodeAutoBuild": true,
@@ -16,6 +23,6 @@
 			}
 		}
 	},
-	"onCreateCommand": "go install github.com/go-delve/delve/cmd/dlv@latest && go install golang.org/x/tools/gopls@latest && go install github.com/cweill/gotests/gotests@latest && go install honnef.co/go/tools/cmd/staticcheck@latest && go install golang.org/x/tools/cmd/goimports@latest",
-	"postStartCommand": "dlv debug --headless --api-version=2 --listen=:5050 --accept-multiclient --log"
+	"onCreateCommand": "go install github.com/go-delve/delve/cmd/dlv@latest && go install golang.org/x/tools/gopls@latest && go install github.com/cweill/gotests/gotests@latest && go install honnef.co/go/tools/cmd/staticcheck@latest && go install golang.org/x/tools/cmd/goimports@latest && go install github.com/cosmtrek/air@latest",
+	"postStartCommand": "air -c .devcontainer/.air.toml"
 }
